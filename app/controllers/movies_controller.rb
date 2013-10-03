@@ -7,20 +7,21 @@ class MoviesController < ApplicationController
   end
 
   def index
-    debugger
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
 
-    @order = params[:order]
+    if params[:order]
+      session[:order] = params[:order]
+    end
 
     if params[:ratings]
-      @ratings_hash = params[:ratings]
+      session[:ratings] = params[:ratings]
     end
     
-    if params[:ratings]
-      @ratings_allowed = params[:ratings].keys
+    if !session[:ratings]
+      session[:ratings] = {'G' => 1, 'PG' => 1, 'PG-13' => 1, 'R' => 1}
     end
-    
-    @movies = Movie.where('rating' => @ratings_allowed).find(:all, :order => @order)
+
+    @movies = Movie.where('rating' => session[:ratings].keys).find(:all, :order => session[:order])
   end
 
   def new
