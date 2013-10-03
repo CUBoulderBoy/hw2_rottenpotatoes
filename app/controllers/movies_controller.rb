@@ -7,8 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    debugger
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+
     @order = params[:order]
-    @movies = Movie.find(:all, :order => @order)
+
+    if params[:ratings]
+      @ratings_hash = params[:ratings]
+    end
+    
+    if params[:ratings]
+      @ratings_allowed = params[:ratings].keys
+    end
+    
+    @movies = Movie.where('rating' => @ratings_allowed).find(:all, :order => @order)
   end
 
   def new
